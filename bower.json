@@ -1,0 +1,24 @@
+{
+  "name": "FEND_P5-FINAL",
+  "homepage": "https://github.com/axlbert/projekte",
+  "authors": [
+    "axlbert <aclanger131@gmail.com>"
+  ],
+  "description": "nanodegree fend p5 exerise",
+  "main": "index.html",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "knockout": "~3.4.0",
+    "polymer": "Polymer/polymer#1.2.0"
+  }
+}
