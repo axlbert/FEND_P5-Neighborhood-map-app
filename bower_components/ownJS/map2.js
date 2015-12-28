@@ -64,19 +64,24 @@ var ViewModel = function() {
   initMap();
   var self = this;
   /**duplicating the list of names to use one for rebuilding as we use the search function and one as a full cross-reference*/
+  self.searchList = ko.observableArray('');
   self.searchList = nameList.slice(0);
   self.query = ko.observable('');
 
+
 /**supposed to empty the sidebar with the names as the function is hit and then repopulate it with items that match the keyboard input supplied by query.*/
 /**Uncaught TypeError: query.toLowerCase is not a function*/
-  self.filterSearch = ko.computed(function() {
-    searchList = [];
+  self.filterSearch = ko.computed(function(value) {
+    if (self.query().length > 0) {
+     self.searchList = [];
+     console.log("if statement has been triggered");
     var len = nameList.length;
     for (var i = 0; i < len; i++) {
       if (nameList[i].toLowerCase().indexOf(self.query().toLowerCase()) >= 0) {
-        searchList.push(nameList[i].name);
+        self.searchList.push(nameList[i].name);
+        console.log("step 2 is working");
       }
-    }
+    }}
 
   }, self);
 
