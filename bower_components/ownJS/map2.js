@@ -2,7 +2,7 @@
 
 var iniLocations = [{
   clickCount: 0,
-  name: "Kitty",
+  name: "Best Restaurant",
   imgSrc: "img/catpick.jpg",
   coords: {
     lat: -20.100,
@@ -11,7 +11,7 @@ var iniLocations = [{
   namelist: ["snoopy", "poopy", "whoopy"]
 }, {
   clickCount: 0,
-  name: "Patty",
+  name: "Best Pub",
   imgSrc: "img/catpick2.jpg",
   coords: {
     lat: 5.210,
@@ -20,7 +20,7 @@ var iniLocations = [{
   namelist: ["woopy", "goopy", "sloopy"]
 }, {
   clickCount: 0,
-  name: "Polly",
+  name: "Landmark",
   imgSrc: "img/catpick3.jpg",
   coords: {
     lat: -17.164,
@@ -29,7 +29,7 @@ var iniLocations = [{
   namelist: ["pappy", "poopy", "whoopy"]
 }, {
   clickCount: 0,
-  name: "Molly",
+  name: "Viewpoint",
   imgSrc: "img/catpick4.jpg",
   coords: {
     lat: -8.640,
@@ -38,7 +38,7 @@ var iniLocations = [{
   namelist: ["pappy", "whoopy"]
 }, {
   clickCount: 0,
-  name: "Mappy",
+  name: "Furniture Store",
   imgSrc: "img/catpick5.jpg",
   coords: {
     lat: 12.930,
@@ -65,8 +65,7 @@ var ViewModel = function() {
   var self = this;
   /**duplicating the list of names to use one for rebuilding as we use the search function and one as a full cross-reference*/
   self.searchList = nameList.slice(0);
-  var query = ko.observable('');
-
+  self.query = ko.observable('');
 
 /**supposed to empty the sidebar with the names as the function is hit and then repopulate it with items that match the keyboard input supplied by query.*/
 /**Uncaught TypeError: query.toLowerCase is not a function*/
@@ -74,7 +73,7 @@ var ViewModel = function() {
     searchList = [];
     var len = nameList.length;
     for (var i = 0; i < len; i++) {
-      if (nameList[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+      if (nameList[i].toLowerCase().indexOf(self.query().toLowerCase()) >= 0) {
         searchList.push(nameList[i].name);
       }
     }
