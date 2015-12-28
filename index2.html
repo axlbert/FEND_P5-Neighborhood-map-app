@@ -20,35 +20,37 @@
 <body>
 	<div class="container">
 		<div class="container-fluid">
-			<div class="row">
-				<div class="col-xs-12">
-					<form class="navbar-form navbar-left" role="search">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" data-bind="textInput: query">
-						</div>
-						<button type="button" class="btn btn-default navbar-btn">to be defined</button>
-					</form>
+			<!--preliminarily placed here to constrain the affeced zone of the search input-->
+			<div data-bind="with: currentSearch()">
+				<div class="row">
+					<div class="col-xs-12">
+						<form class="navbar-form navbar-left" role="search">
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="Search" data-bind="textInput: query">
+							</div>
+							<button type="button" class="btn btn-default navbar-btn">to be defined</button>
+						</form>
+					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-2">
-					<ul class="div-group" data-bind="template: {name:'list', foreach: searchList}"></ul>
+				<div class="row">
+					<div class="col-xs-2">
+						<ul class="div-group" data-bind="template: {name:'list', foreach: searchList, event: $parent.currentSearch()}"></ul>
+						<!--adding a $parent keeps the code from breaking-->
+						<script type="text/html" id="list">
+							<li class="list-group-item" data-bind="text: $data"></li>
 
-					<!--<ul class="div-group" data-bind="foreach: locationList">-->
-					<script type="text/html" id="list">
-						<li class="list-group-item" data-bind="text: $data"></li>
+						</script>
+						</ul>
 
-					</script>
-					</ul>
-
+					</div>
+					<div class="col-xs-10">
+						<div id="map"></div>
+					</div>
 				</div>
-				<div class="col-xs-10">
-					<div id="map"></div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					x
+				<div class="row">
+					<div class="col-xs-12">
+						x
+					</div>
 				</div>
 			</div>
 		</div>

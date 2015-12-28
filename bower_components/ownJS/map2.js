@@ -60,20 +60,17 @@ var filterNames = function() {
 var nameList = filterNames();
 
 
-var ViewModel = function() {
-  initMap();
+
+/**supposed to empty the sidebar with the names as the function is hit and then repopulate it with items that match the keyboard input supplied by query.*/
+var filterConstructor = function(){
   var self = this;
-  /**duplicating the list of names to use one for rebuilding as we use the search function and one as a full cross-reference*/
   self.searchList = ko.observableArray('');
   self.searchList = nameList.slice(0);
   self.query = ko.observable('');
 
-
-/**supposed to empty the sidebar with the names as the function is hit and then repopulate it with items that match the keyboard input supplied by query.*/
-/**Uncaught TypeError: query.toLowerCase is not a function*/
-  self.filterSearch = ko.computed(function(value) {
+  self.filterSearch = ko.computed(function() {
     if (self.query().length > 0) {
-     self.searchList = [];
+      self.searchList = [];
      console.log("if statement has been triggered");
     var len = nameList.length;
     for (var i = 0; i < len; i++) {
@@ -85,8 +82,16 @@ var ViewModel = function() {
 
   }, self);
 
+};
 
-/**launching the google map*/
+
+var ViewModel = function() {
+  /**launching the google map*/
+  initMap();
+  var self = this;
+
+/** constructor method aiming to display the current search result*/
+  self.currentSearch = ko.observable( new filterConstructor() );
 
 };
 
