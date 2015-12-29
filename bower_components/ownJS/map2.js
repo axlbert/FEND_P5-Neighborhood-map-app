@@ -121,11 +121,11 @@ var ViewModel = function() {
   self.filterFunc = function(){
     var filterInput = self.input().toLowerCase();
     if (filterInput.length > 1) {
-    //self.filterList.removeAll();
+    self.filterList.removeAll();
     console.log("filter function is hit");
     iniLocations.forEach(function(val){
-    if (val.name.toLowerCase().indexOf(filterInput)!== -1) {
-      self.filterList.removeAll();
+    if (val.name.toLowerCase().indexOf(filterInput)>= 0) {
+
       console.log("if clause of filter function is hit");
       self.filterList.push(self.locList);
     }})
