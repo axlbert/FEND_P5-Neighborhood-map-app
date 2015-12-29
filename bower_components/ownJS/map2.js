@@ -118,7 +118,7 @@ var ViewModel = function() {
     var filterInput = self.input();
     self.filterList.removeAll();
     console.log("filter function is hit");
-    if (self.locList.name.toLowerCase().indexOf(filterInput)>= 0) {
+    if (self.locList.name.toLowerCase().indexOf(filterInput.toLowerCase())>= 0) {
       console.log("if clause of filter function is hit");
       self.filterList.push(self.locList);
     }
