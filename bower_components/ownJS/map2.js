@@ -105,13 +105,13 @@ var ViewModel = function() {
   self.filterList = ko.observableArray([]);
 
   /** populating a copy  of the locationlist with the dataset for better filtering*/
- // self.buildFilterList = function(val) {
+ self.buildFilterList = function(val) {
   iniLocations.forEach(function(val){
     self.filterList.push(val);
   });
- // };
+ };
 
-  //self.buildFilterList();
+  self.buildFilterList();
 
 
   /** stores the users input*/
@@ -119,9 +119,10 @@ var ViewModel = function() {
 
   /** result of this should populate the filterList, according to search input*/
   self.filterFunc = function(){
+    self.filterList.removeAll();
     var filterInput = self.input().toLowerCase();
     if (filterInput.length > 1) {
-    self.filterList.removeAll();
+
     console.log("filter function is hit");
     iniLocations.forEach(function(val){
     if (val.name.toLowerCase().indexOf(filterInput)>= 0) {
@@ -129,8 +130,9 @@ var ViewModel = function() {
       console.log("if clause of filter function is hit");
       self.filterList.push(val);
     }})
-    //else { this.buildFilterList() };
-  }};
+     } else { this.buildFilterList() };
+
+   };
 
 
 
