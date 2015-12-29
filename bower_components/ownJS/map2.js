@@ -127,7 +127,7 @@ var ViewModel = function() {
     if (val.name.toLowerCase().indexOf(filterInput)>= 0) {
 
       console.log("if clause of filter function is hit");
-      self.filterList.push(self.locList);
+      self.filterList.push(val);
     }})
     //else { this.buildFilterList() };
   }};
