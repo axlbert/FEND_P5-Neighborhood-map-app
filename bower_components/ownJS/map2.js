@@ -47,7 +47,8 @@ var iniLocations = [{
   namelist: ["frappy"]
 }];
 
-/**creating the initial list of names to be displayed in the sidebar*/
+/**creating the initial list of names for the filter, not completetly necessary will be refactored and removed later*/
+/** new copy function declared in the ViewModel, should be deleted*/
 var filterNames = function() {
   var NameList = [];
   var len = iniLocations.length;
@@ -56,31 +57,17 @@ var filterNames = function() {
   }
   return NameList;
 };
-
+/** same as above*/
 var nameList = filterNames();
 
 
 
 /**supposed to empty the sidebar with the names as the function is hit and then repopulate it with items that match the keyboard input supplied by query.*/
-var filterConstructor = function(){
-  var self = this;
-  self.searchList = ko.observableArray('');
-  self.searchList = nameList.slice(0);
-  self.query = ko.observable('');
+var Constructor = function(data){
+  this.name = ko.observable(data.name);
 
-  self.filterSearch = ko.computed(function() {
-    if (self.query().length > 0) {
-      self.searchList = [];
-     console.log("if statement has been triggered");
-    var len = nameList.length;
-    for (var i = 0; i < len; i++) {
-      if (nameList[i].toLowerCase().indexOf(self.query().toLowerCase()) >= 0) {
-        self.searchList.push(nameList[i].name);
-        console.log("step 2 is working");
-      }
-    }}
-
-  }, self);
+  //self.searchList = ko.observableArray('');
+  //self.searchList = nameList.slice(0);
 
 };
 
@@ -90,8 +77,68 @@ var ViewModel = function() {
   initMap();
   var self = this;
 
-/** constructor method aiming to display the current search result*/
-  self.currentSearch = ko.observable( new filterConstructor() );
+  /**"smart" version of iniLocations where each array item has been "constructed" with observable features*/
+  /** should not be manipulated for the search function, is just ready to display things*/
+  /** should also not be used to display the ever changing filtermenu-list*/
+  self.locList = ko.observableArray([]);
+
+  /** smartifying all the array items and pushing them into the observable array above*/
+  /** should not be manipulated for the search function either*/
+  /** should also not be used to display the ever changing filtermenu-list*/
+  iniLocations.forEach(function(locItem){
+    self.locList.push(new Constructor(locItem));
+  });
+
+/** currently selected array, should be all locations by default*/
+/** this should receive a different scope when search is hit*/
+/**only contains one item right now*/
+/** not suitable for use of menufilter-list, only containts one item and thus one name*/
+  self.currentSearch = ko.observable(this.locList()[0]);
+
+ /** Keep this for later when selecting an item from the list, BUT additional search function is needed */
+  self.setLoc = function(filtLoc){
+    self.currentSearch(filtLoc);
+  };
+
+  /**should be used to push the current search result in and then render the menu from it*/
+  /** problem is to not have it empty at first */
+  self.filterList = ko.observableArray();
+
+  /** populating a copy  of the locationlist with the dataset for better filtering*/
+  iniLocations.forEach(function(val){
+    self.filterList.push(val);
+  });
+
+
+  /** stores the users input*/
+  self.input = ko.observable('');
+
+  /** result of this should populate the filterList, according to search input*/
+  self.filterFunc = function(){
+    var filterInput = self.input();
+    self.filterList.removeAll();
+    console.log("filter function is hit");
+    if (self.locList.name.toLowerCase().indexOf(filterInput)>= 0) {
+      console.log("if clause of filter function is hit");
+      self.filterList.push(self.locList);
+    }
+  };
+
+    //if (this.input.length > 0) {
+     // self.searchList = []; eventually reuse for filterList ?
+     //console.log("if statement has been triggered");
+    /** for comparing against possible entries, */
+    //var len = nameList.length;
+   // for (var i = 0; i < len; i++) {
+    //  if (nameList[i].toLowerCase().indexOf(this.input.toLowerCase()) >= 0) {
+      //  this.filterList.push(nameList[i].name);
+        //console.log("step 2 is working");
+     // }
+   // }}
+
+ // }, self);
+
+//};
 
 };
 
