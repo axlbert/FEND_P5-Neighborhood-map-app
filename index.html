@@ -2,6 +2,7 @@
 <html>
 
 <head>
+	<link href='https://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet' type='text/css'>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>
@@ -24,32 +25,32 @@
 			<!--<div data-bind="with: locList">-->
 				<div class="row">
 					<div class="col-xs-12">
-						<form class="navbar-form navbar-left" role="search">
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="Search" data-bind="textInput: input, event: {keyup: filterFunc}">
-							</div>
-							<button type="button" class="btn btn-default navbar-btn">to be defined</button>
-						</form>
+							<form class="navbar-form navbar-left" role="search">
+								<div class="form-group">
+									<input type="text" class="form-control" placeholder="Search" data-bind="textInput: input, event: {keyup: filterFunc}"><span class="inverted-headline">Discover a random city :</span><span class="inverted-headline2">Koblenz, Germany</span>
+								</div>
+							</form>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-2">
+					<div class="col-xs-1">
+						<button type="button" class="btn btn-default navbar-btn" data-bind="click: showAllMarkers">Show all</button>
 						<ul class="div-group" data-bind="template: {name:'list', foreach: filterList  }"></ul>
 						<!--adding a $parent keeps the code from breaking-->
 						<script type="text/html" id="list">
-							<li class="list-group-item" data-bind="text: name"></li>
-
+							<li class="list-group-item" data-bind="text: name, click: $parent.showPos"></li>
 						</script>
+
 						</ul>
 
 					</div>
-					<div class="col-xs-10">
+					<div class="col-xs-11">
 						<div id="map"></div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12">
-						x
+
 					</div>
 				</div>
 			<!--</div>-->

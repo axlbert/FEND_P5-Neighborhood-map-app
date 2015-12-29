@@ -1,8 +1,26 @@
 #map {
   max-width: 960px;
-  height: 500px;
+  height: 550px;
+}
+
+body {
+	background-color: black;
+	font-family: 'Indie Flower', cursive;
+	font-size: 20px;
 }
 
 /* {
   border: 1px solid red;
 }*/
+
+.inverted-headline {
+	color: white;
+	font-size: 20px;
+	padding: 0 20px;
+}
+
+.inverted-headline2 {
+	color: white;
+	font-size: 30px;
+	padding: 0 20px;
+}

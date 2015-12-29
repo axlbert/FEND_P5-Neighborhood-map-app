@@ -2,50 +2,88 @@
 
 var iniLocations = [{
   clickCount: 0,
-  name: "Best Restaurant",
-  descr: "awesome food",
+  name: "Fortress",
+  descr: "awesome view included",
   coords: {
-    lat: -7.100,
-    lng: 140.044
+    lat: 50.364409,
+    lng: 7.614130
   },
   namelist: ["snoopy", "poopy", "whoopy"]
 }, {
   clickCount: 0,
-  name: "Best Pub",
-  descr: "awesome beer",
+  name: "Genussges.",
+  descr: "awesome food",
   coords: {
-    lat: 5.210,
-    lng: 101.044
+    lat: 50.363104,
+    lng: 7.604488
   },
   namelist: ["woopy", "goopy", "sloopy"]
 }, {
   clickCount: 0,
   name: "Landmark",
-  descr: "awesome building",
+  descr: "awesome view",
   coords: {
-    lat: -17.164,
-    lng: 135.044
+    lat: 50.364555,
+    lng: 7.606087
   },
   namelist: ["pappy", "poopy", "whoopy"]
 }, {
   clickCount: 0,
-  name: "Viewpoint",
-  descr: "awesome view",
+  name: "Zenit Bar",
+  descr: "awesome drinks",
   coords: {
-    lat: -8.640,
-    lng: 115.044
+    lat: 50.359347,
+    lng: 7.600011
   },
   namelist: ["pappy", "whoopy"]
 }, {
   clickCount: 0,
-  name: "Furniture Store",
-  descr: "awesome chairs",
+  name: "Parking",
+  descr: "decent",
   coords: {
-    lat: 12.930,
-    lng: 111.044
+    lat: 50.357221,
+    lng: 7.600222
+  },
+  namelist: ["pappy", "whoopy"]
+},{
+  clickCount: 0,
+  name: "Absintheria",
+  descr: "terrific bar",
+  coords: {
+    lat: 50.362228,
+    lng: 7.595217
+  },
+  namelist: ["pappy", "whoopy"]
+},{
+  clickCount: 0,
+  name: "Palace",
+  descr: "not too bad",
+  coords: {
+    lat: 50.355660,
+    lng:  7.601884
+  },
+  namelist: ["pappy", "whoopy"]
+},{
+  clickCount: 0,
+  name: "Cable car",
+  descr: "across the river",
+  coords: {
+    lat: 50.361831,
+    lng:  7.604852
+  },
+  namelist: ["pappy", "whoopy"]
+},{
+  clickCount: 0,
+  name: "Gecko Bar",
+  descr: "drinks in a cellar",
+  coords: {
+    lat: 50.362012,
+    lng: 7.595963
   },
   namelist: ["frappy"]
 }];
+
+
 
 /**supposed to empty the sidebar with the names as the function is hit and then repopulate it with items that match the keyboard input supplied by query.*/
 var Constructor = function(data){
@@ -61,9 +99,9 @@ var ViewModel = function() {
   /**launching the google map*/
     var self = this;
     self.map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 5.210,lng: 101.044},
+    center: {lat:  50.3590365,lng: 7.6010197},
     scrollwheel: false,
-    zoom: 4
+    zoom: 15
   });
 
 /** create an array for all markers that will be observed for changes*/
@@ -172,7 +210,10 @@ self.showAllMarkers = function(){
 
    };
 
-
+   self.showPos = function(val){
+      self.hideMarkers();
+      self.showMarkers(iniLocations.indexOf(val));
+   };
 };
 
 
