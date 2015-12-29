@@ -102,12 +102,16 @@ var ViewModel = function() {
 
   /**should be used to push the current search result in and then render the menu from it*/
   /** problem is to not have it empty at first */
-  self.filterList = ko.observableArray();
+  self.filterList = ko.observableArray([]);
 
   /** populating a copy  of the locationlist with the dataset for better filtering*/
+ // self.buildFilterList = function(val) {
   iniLocations.forEach(function(val){
     self.filterList.push(val);
   });
+ // };
+
+  //self.buildFilterList();
 
 
   /** stores the users input*/
@@ -115,14 +119,21 @@ var ViewModel = function() {
 
   /** result of this should populate the filterList, according to search input*/
   self.filterFunc = function(){
-    var filterInput = self.input();
-    self.filterList.removeAll();
+    var filterInput = self.input().toLowerCase();
+    if (filterInput.length > 1) {
+    //self.filterList.removeAll();
     console.log("filter function is hit");
-    if (self.locList.name.toLowerCase().indexOf(filterInput.toLowerCase())>= 0) {
+    iniLocations.forEach(function(val){
+    if (val.name.toLowerCase().indexOf(filterInput)!== -1) {
+      self.filterList.removeAll();
       console.log("if clause of filter function is hit");
       self.filterList.push(self.locList);
-    }
-  };
+    }})
+    //else { this.buildFilterList() };
+  }};
+
+
+
 
     //if (this.input.length > 0) {
      // self.searchList = []; eventually reuse for filterList ?
