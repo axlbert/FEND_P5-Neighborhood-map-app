@@ -24,3 +24,7 @@ body {
 	font-size: 30px;
 	padding: 0 20px;
 }
+
+#btn100 {
+  z-index:+3;
+}

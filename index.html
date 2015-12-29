@@ -34,7 +34,7 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-1">
-						<button type="button" class="btn btn-default navbar-btn" data-bind="click: showAllMarkers">Show all</button>
+						<button id="btn100" type="button" class="btn btn-default navbar-btn" data-bind="click: showAllMarkers">Show all</button>
 						<ul class="div-group" data-bind="template: {name:'list', foreach: filterList  }"></ul>
 						<!--adding a $parent keeps the code from breaking-->
 						<script type="text/html" id="list">
