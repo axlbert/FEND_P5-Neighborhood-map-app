@@ -35,15 +35,12 @@ $(document).ready(function () {
       namelist : ["frappy"]
   }];
 
-
-
 var Loc = function(data) {
   this.clickCount = ko.observable(data.clickCount);
   this.name = ko.observable(data.name);
   this.imgSrc = ko.observable(data.imgSrc);
   this.imgAttribution = ko.observable(data.imgAttribution);
   this.namelist = ko.observableArray(data.namelist);
-
 };
 
 
