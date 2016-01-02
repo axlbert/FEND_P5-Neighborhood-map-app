@@ -1,8 +1,12 @@
+/** global variables*/
+var infowindow;
+
+
 /** database storing locations and some details */
 var iniLocations = [{
   clickCount: 0,
   name: "Ehrenbreitstein",
-  descr: "awesome view included",
+  descr: "a great view",
   coords: {
     lat: 50.364409,
     lng: 7.614130
@@ -10,7 +14,7 @@ var iniLocations = [{
 }, {
   clickCount: 0,
   name: "Palace Square",
-  descr: "awesome gras",
+  descr: "an awesome green",
   coords: {
     lat: 50.355523,
     lng: 7.602743
@@ -18,7 +22,7 @@ var iniLocations = [{
 }, {
   clickCount: 0,
   name: "Deutsches-Eck",
-  descr: "awesome view",
+  descr: "two rivers at once",
   coords: {
     lat: 50.364555,
     lng: 7.606087
@@ -34,7 +38,7 @@ var iniLocations = [{
 }, {
   clickCount: 0,
   name: "Train_Station",
-  descr: "decent",
+  descr: "trains",
   coords: {
     lat: 50.358886,
     lng: 7.590677
@@ -42,7 +46,7 @@ var iniLocations = [{
 }, {
   clickCount: 0,
   name: "Liebfrauenkirche",
-  descr: "nice building",
+  descr: "a nice building",
   coords: {
     lat: 50.360793,
     lng: 7.595737
@@ -50,7 +54,7 @@ var iniLocations = [{
 }, {
   clickCount: 0,
   name: "Electoral-Palace",
-  descr: "not too bad",
+  descr: "neat architecture",
   coords: {
     lat: 50.355461,
     lng: 7.603140
@@ -58,7 +62,7 @@ var iniLocations = [{
 }, {
   clickCount: 0,
   name: "Church",
-  descr: "looks old",
+  descr: "an old building",
   coords: {
     lat: 50.362062,
     lng: 7.603766
@@ -66,7 +70,7 @@ var iniLocations = [{
 }, {
   clickCount: 0,
   name: "Kapuzinerplatz",
-  descr: "not too bad",
+  descr: "an old square",
   coords: {
     lat: 50.358631,
     lng: 7.610564
@@ -94,7 +98,6 @@ var ViewModel = function() {
 
   /** necessary since always the last item in the list was pooulating all windows */
   self.infoWindowArray = ko.observableArray();
-
   /** constructor function for the markers*/
   self.constructMarkers = function(itemNo) {
     /** confusing self and this here have been a fantastic error source*/
@@ -126,8 +129,9 @@ var ViewModel = function() {
   self.constructInfoWindow = function(itemNo) {
     this.infowindow = new google.maps.InfoWindow({
       content: self.buildBox(itemNo),
+      position: itemNo.coords,
       //** this is supposed to move the infobox just on top of the marker ###but it doesnt### */
-      pixelOffset: (0, 0)
+      pixelOffset: (0,0)
     });
 
   };
@@ -136,8 +140,8 @@ var ViewModel = function() {
   /** creating a textbox with the links requested from the wiki api*/
   self.buildBox = function(itemNo) {
     self.wikiArticles(itemNo);
-    var samplepic = ('<img src="http://maps.googleapis.com/maps/api/streetview?size=240x120&location=' + itemNo.coords.lat + ',' + itemNo.coords.lng + '"">');
-    var contentStr = '<h3>Discover ' + itemNo.desr + '</h3><br>' + '<p>Read more:<a href="' + self.ArticleArray()[iniLocations.indexOf(itemNo)] + '">Wikipedia</a><br>' + samplepic;
+    var samplepic = ('<img class="streetpic" src="http://maps.googleapis.com/maps/api/streetview?size=240x120&location=' + itemNo.coords.lat + ',' + itemNo.coords.lng + '"">');
+    var contentStr = '<h3 class="headline3">Discover ' + itemNo.descr + '</h3><br>' + '<p>Read more:<a href="' + self.ArticleArray()[iniLocations.indexOf(itemNo)] + '">Wikipedia</a><br>' + samplepic;
     return contentStr;
     //console.log(contentStr);
   };
