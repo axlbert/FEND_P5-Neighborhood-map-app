@@ -1,7 +1,7 @@
 /** database storing locations and some details */
 var iniLocations = [{
   clickCount: 0,
-  name: "Fortress",
+  name: "Ehrenbreitstein",
   descr: "awesome view included",
   coords: {
     lat: 50.364409,
@@ -9,15 +9,15 @@ var iniLocations = [{
   }
 }, {
   clickCount: 0,
-  name: "Genussges.",
-  descr: "awesome food",
+  name: "Palace Square",
+  descr: "awesome gras",
   coords: {
-    lat: 50.363104,
-    lng: 7.604488
+    lat: 50.355523,
+    lng: 7.602743
   }
 }, {
   clickCount: 0,
-  name: "Landmark",
+  name: "Deutsches-Eck",
   descr: "awesome view",
   coords: {
     lat: 50.364555,
@@ -25,51 +25,51 @@ var iniLocations = [{
   }
 }, {
   clickCount: 0,
-  name: "Zenit Bar",
-  descr: "awesome drinks",
+  name: "Schängelbrunnen",
+  descr: "a Fountain!",
   coords: {
-    lat: 50.359347,
-    lng: 7.600011
+    lat: 50.360200,
+    lng: 7.598058
   }
 }, {
   clickCount: 0,
-  name: "Parking",
+  name: "Train_Station",
   descr: "decent",
   coords: {
-    lat: 50.357221,
-    lng: 7.600222
+    lat: 50.358886,
+    lng: 7.590677
   }
 }, {
   clickCount: 0,
-  name: "Absintheria",
-  descr: "terrific bar",
+  name: "Liebfrauenkirche",
+  descr: "nice building",
   coords: {
-    lat: 50.362228,
-    lng: 7.595217
+    lat: 50.360793,
+    lng: 7.595737
   }
 }, {
   clickCount: 0,
-  name: "Palace",
+  name: "Electoral-Palace",
   descr: "not too bad",
   coords: {
-    lat: 50.355660,
-    lng: 7.601884
+    lat: 50.355461,
+    lng: 7.603140
   }
 }, {
   clickCount: 0,
-  name: "Cable car",
-  descr: "across the river",
+  name: "Church",
+  descr: "looks old",
   coords: {
-    lat: 50.361831,
-    lng: 7.604852
+    lat: 50.362062,
+    lng: 7.603766
   }
 }, {
   clickCount: 0,
-  name: "Gecko Bar",
-  descr: "drinks in a cellar",
+  name: "Kapuzinerplatz",
+  descr: "not too bad",
   coords: {
-    lat: 50.362012,
-    lng: 7.595963
+    lat: 50.358631,
+    lng: 7.610564
   }
 }];
 
@@ -101,7 +101,7 @@ var ViewModel = function() {
     this.marker = new google.maps.Marker({
       position: new google.maps.LatLng(itemNo.coords.lat, itemNo.coords.lng),
       map: self.map,
-      animation:null,
+      animation: null,
       title: itemNo.descr
     });
     /** making the markers clickable*/
@@ -112,26 +112,60 @@ var ViewModel = function() {
       //** starting the marker bounce */
       self.markerArray()[iniLocations.indexOf(itemNo)].marker.setAnimation(google.maps.Animation.BOUNCE);
       //** calling the bouncing off after 2,85 seconds (last animation cycle is roughly finished then) */
-      setTimeout(function(){self.markerArray()[iniLocations.indexOf(itemNo)].marker.setAnimation(false);}, 2850);
-  });
+      setTimeout(function() {
+        self.markerArray()[iniLocations.indexOf(itemNo)].marker.setAnimation(false);
+      }, 2850);
+    });
   };
 
-/** building array of infowindows, works nicely: vm.infoWindowArray()[0].infowindow.content*/
-self.constructInfoWindow = function(itemNo) {
-      this.infowindow = new google.maps.InfoWindow({
+
+  /**for storing the api-retrieved wikipedia articles */
+  self.ArticleArray = ko.observableArray();
+
+  /** building array of infowindows, works nicely: vm.infoWindowArray()[0].infowindow.content*/
+  self.constructInfoWindow = function(itemNo) {
+    this.infowindow = new google.maps.InfoWindow({
       content: self.buildBox(itemNo),
       //** this is supposed to move the infobox just on top of the marker ###but it doesnt### */
-      pixelOffset:(0,0)
+      pixelOffset: (0, 0)
     });
 
-};
-
-  /** place api request here, for now just plain text*/
-  self.buildBox = function(itemNo) {
-    console.log(itemNo.descr);
-    var contentStr =  itemNo.descr;
-    return contentStr;
   };
+
+
+  /** creating a textbox with the links requested from the wiki api*/
+  self.buildBox = function(itemNo) {
+    self.wikiArticles(itemNo);
+    var samplepic = ('<img src="http://maps.googleapis.com/maps/api/streetview?size=240x120&location=' + itemNo.coords.lat + ',' + itemNo.coords.lng + '"">');
+    var contentStr = '<h3>Discover ' + itemNo.desr + '</h3><br>' + '<p>Read more:<a href="' + self.ArticleArray()[iniLocations.indexOf(itemNo)] + '">Wikipedia</a><br>' + samplepic;
+    return contentStr;
+    //console.log(contentStr);
+  };
+
+
+
+/**wikipedia api request */
+  self.wikiArticles = function(itemNo) {
+    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + itemNo.name + '&format=json&callback=wikiCallback';
+    //console.log(wikiUrl);
+    $.ajax({
+      url: wikiUrl,
+      dataType: "jsonp",
+      jsonp: "callback",
+      success: function(response) {
+        var articleList = response[1];
+        /**limiting returned articles to 1 for now */
+        for (var i = 0; i < 1; i++) {
+          articleStr = articleList[i];
+          var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+          /** further usage of the url string in the observablearray*/
+          self.ArticleArray.push(url);
+          return url;
+        }
+      }
+    });
+  };
+
 
   /**building an array of markers to be observed*/
   iniLocations.forEach(function(itemNo) {
@@ -140,7 +174,7 @@ self.constructInfoWindow = function(itemNo) {
   });
 
 
- // self.addmarkerListeners();
+  // self.addmarkerListeners();
   /**should be used to push the current search result in and then render the menu from it*/
   /** problem is to not have it empty at first */
   self.filterList = ko.observableArray([]);
@@ -202,7 +236,6 @@ self.constructInfoWindow = function(itemNo) {
       this.buildFilterList();
       self.showAllMarkers();
     }
-
   };
 
   /** linked with the click function in html to only show the selected marker*/
