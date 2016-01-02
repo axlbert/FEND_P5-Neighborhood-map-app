@@ -92,34 +92,55 @@ var ViewModel = function() {
   /** create an array for all markers that will be observed for changes*/
   self.markerArray = ko.observableArray();
 
-  /** constructor function for the markers, did not work outside the ViewModel though*/
+  /** necessary since always the last item in the list was pooulating all windows */
+  self.infoWindowArray = ko.observableArray();
+
+  /** constructor function for the markers*/
   self.constructMarkers = function(itemNo) {
     /** confusing self and this here have been a fantastic error source*/
     this.marker = new google.maps.Marker({
       position: new google.maps.LatLng(itemNo.coords.lat, itemNo.coords.lng),
       map: self.map,
+      animation:null,
       title: itemNo.descr
     });
+    /** making the markers clickable*/
     this.marker.addListener('click', function() {
-      self.infowindow.open(self.map, self.marker);
-    });
-    self.infowindow = new google.maps.InfoWindow({
-      content: self.buildBox(itemNo)
-    });
+      //console.log("works");
+      //** calling the info window*/
+      self.infoWindowArray()[iniLocations.indexOf(itemNo)].infowindow.open(self.map, this.marker);
+      //** starting the marker bounce */
+      self.markerArray()[iniLocations.indexOf(itemNo)].marker.setAnimation(google.maps.Animation.BOUNCE);
+      //** calling the bouncing off after 2,85 seconds (last animation cycle is roughly finished then) */
+      setTimeout(function(){self.markerArray()[iniLocations.indexOf(itemNo)].marker.setAnimation(false);}, 2850);
+  });
   };
 
-  /** some cheap textbox*/
+/** building array of infowindows, works nicely: vm.infoWindowArray()[0].infowindow.content*/
+self.constructInfoWindow = function(itemNo) {
+      this.infowindow = new google.maps.InfoWindow({
+      content: self.buildBox(itemNo),
+      //** this is supposed to move the infobox just on top of the marker ###but it doesnt### */
+      pixelOffset:(0,0)
+    });
+
+};
+
+  /** place api request here, for now just plain text*/
   self.buildBox = function(itemNo) {
-    var contentStr = itemNo.descr;
+    console.log(itemNo.descr);
+    var contentStr =  itemNo.descr;
     return contentStr;
   };
 
   /**building an array of markers to be observed*/
   iniLocations.forEach(function(itemNo) {
     self.markerArray.push(new self.constructMarkers(itemNo));
+    self.infoWindowArray.push(new self.constructInfoWindow(itemNo));
   });
 
 
+ // self.addmarkerListeners();
   /**should be used to push the current search result in and then render the menu from it*/
   /** problem is to not have it empty at first */
   self.filterList = ko.observableArray([]);
@@ -198,3 +219,5 @@ ko.applyBindings(new ViewModel());
 
 /** only used for trouble shooting*/
 //var foo = ViewModel.markerArray;
+//var vm = ko.dataFor(document.body);
+//vm.infoWindowArray()[0].infowindow.content
