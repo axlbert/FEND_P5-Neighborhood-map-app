@@ -14,8 +14,9 @@
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
 	<link rel="stylesheet" href="bower_components/ownCSS/styles.css">
 	<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-
-	<script async defer src="http://maps.googleapis.com/maps/api/js?callback=init"></script>
+	<!-- error handling feature included -->
+	<script>function loadfailure() { alert("Map feature could not be loaded");}</script>
+	<script async defer src="http://maps.googleapis.com/maps/api/js?callback=init" onerror="loadfailure()"></script>
 	<!--http://www.zell-weekeat.com/bower/ description on how to use bower-->
 
 </head>
@@ -50,7 +51,8 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12">
-
+						<div data-bind="wikiError">
+						</div>
 					</div>
 				</div>
 			<!--</div>-->

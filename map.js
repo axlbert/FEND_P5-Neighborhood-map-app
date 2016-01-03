@@ -247,7 +247,12 @@ var ViewModel = function() {
 /**wikipedia api request */
   function wikiArticles(itemNo) {
     var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + itemNo.name + '&format=json&callback=wikiCallback';
-    //console.log(wikiUrl);
+    var wikiRequestTimeout = setTimeout(function(){
+      wikiError = ko.observable('');
+      wikiError = ("failed to load wikipedia articles");
+      },4000);
+
+    /**actual part of the api request */
     $.ajax({
       url: wikiUrl,
       dataType: "jsonp",
@@ -262,6 +267,7 @@ var ViewModel = function() {
           wikilog.push(url);
           return url;
         }
+        clearTimeout(wikiRequestTimeout);
       }
     });
   };
