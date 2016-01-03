@@ -77,7 +77,10 @@ var iniLocations = [{
   }
 }];
 
-
+/**apparently this and a callback in the google url is enough to make google maps get called asynchronously */
+function init() {
+  ko.applyBindings(new ViewModel());
+};
 
 /**ViewModel aka Octopus*/
 
@@ -252,7 +255,7 @@ var ViewModel = function() {
 
 
 /**knockout.js go-live*/
-ko.applyBindings(new ViewModel());
+
 
 /** only used for trouble shooting*/
 //var foo = ViewModel.markerArray;
