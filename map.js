@@ -1,7 +1,8 @@
 /** global variables*/
 var infowindow;
 var map;
-
+/**created as a global variable so the externalized api request can call it better*/
+var wikilog = ko.observableArray();
 
 /** database storing locations and some details */
 var iniLocations = [{
@@ -152,36 +153,12 @@ var ViewModel = function() {
 
   /** creating a textbox with the links requested from the wiki api*/
   self.buildBox = function(itemNo) {
-    self.wikiArticles(itemNo);
+    wikiArticles(itemNo);
     var samplepic = ('<img class="streetpic" src="http://maps.googleapis.com/maps/api/streetview?size=240x120&location=' + itemNo.coords.lat + ',' + itemNo.coords.lng + '"">');
-    var contentStr = '<h3 class="headline3">Discover ' + itemNo.descr + '</h3><br>' + '<p>Read more:<a href="' + self.ArticleArray()[iniLocations.indexOf(itemNo)] + '">Wikipedia</a><br>' + samplepic;
+    var contentStr = '<h3 class="headline3">Discover ' + itemNo.descr + '</h3><br>' + '<p>Read more:<a href="' + wikilog[iniLocations.indexOf(itemNo)] + '">Wikipedia</a><br>' + samplepic;
     return contentStr;
     //console.log(contentStr);
   };
-
-
-/**wikipedia api request */
-  self.wikiArticles = function(itemNo) {
-    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + itemNo.name + '&format=json&callback=wikiCallback';
-    //console.log(wikiUrl);
-    $.ajax({
-      url: wikiUrl,
-      dataType: "jsonp",
-      jsonp: "callback",
-      success: function(response) {
-        var articleList = response[1];
-        /**limiting returned articles to 1 for now */
-        for (var i = 0; i < 1; i++) {
-          articleStr = articleList[i];
-          var url = 'http://en.wikipedia.org/wiki/' + articleStr;
-          /** further usage of the url string in the observablearray*/
-          self.ArticleArray.push(url);
-          return url;
-        }
-      }
-    });
-  };
-
 
   /**building an array of markers to be observed*/
   iniLocations.forEach(function(itemNo) {
@@ -266,6 +243,28 @@ var ViewModel = function() {
   };
 };
 
+
+/**wikipedia api request */
+  function wikiArticles(itemNo) {
+    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + itemNo.name + '&format=json&callback=wikiCallback';
+    //console.log(wikiUrl);
+    $.ajax({
+      url: wikiUrl,
+      dataType: "jsonp",
+      jsonp: "callback",
+      success: function(response) {
+        var articleList = response[1];
+        /**limiting returned articles to 1 for now */
+        for (var i = 0; i < 1; i++) {
+          articleStr = articleList[i];
+          var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+          /** further usage of the url string in the observablearray*/
+          wikilog.push(url);
+          return url;
+        }
+      }
+    });
+  };
 
 
 /** only used for trouble shooting*/
