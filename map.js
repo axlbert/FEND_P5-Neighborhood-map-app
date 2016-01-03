@@ -244,6 +244,8 @@ var ViewModel = function() {
         if (val.name.toLowerCase().indexOf(filterInput) >= 0) {
 
           self.showMarkers(iniLocations.indexOf(val));
+          self.closeAllWindows();
+          self.infoWindowArray()[iniLocations.indexOf(val)].infowindow.open(map, this.marker);
           //console.log("if clause of filter function is hit");
           self.filterList.push(val);
         }
@@ -251,6 +253,7 @@ var ViewModel = function() {
     } else {
       this.buildFilterList();
       self.showAllMarkers();
+      self.closeAllWindows();
     }
   };
 
@@ -258,6 +261,8 @@ var ViewModel = function() {
   self.showPos = function(val) {
     self.hideMarkers();
     self.showMarkers(iniLocations.indexOf(val));
+    self.closeAllWindows();
+    self.infoWindowArray()[iniLocations.indexOf(val)].infowindow.open(map, this.marker);
   };
 };
 
