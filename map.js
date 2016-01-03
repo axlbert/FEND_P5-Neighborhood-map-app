@@ -1,5 +1,6 @@
 /** global variables*/
 var infowindow;
+var map;
 
 
 /** database storing locations and some details */
@@ -79,6 +80,7 @@ var iniLocations = [{
 
 /**apparently this and a callback in the google url is enough to make google maps get called asynchronously */
 function init() {
+/**knockout.js go-live*/
   ko.applyBindings(new ViewModel());
 };
 
@@ -87,7 +89,7 @@ function init() {
 var ViewModel = function() {
   /**launching the google map*/
   var self = this;
-  self.map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(document.getElementById('map'), {
     center: {
       lat: 50.3590365,
       lng: 7.6010197
@@ -106,15 +108,18 @@ var ViewModel = function() {
     /** confusing self and this here have been a fantastic error source*/
     this.marker = new google.maps.Marker({
       position: new google.maps.LatLng(itemNo.coords.lat, itemNo.coords.lng),
-      map: self.map,
+      map: map,
       animation: null,
       title: itemNo.descr
     });
     /** making the markers clickable*/
     this.marker.addListener('click', function() {
       //console.log("works");
+      /**closing all old infowindows*/
+      self.closeAllWindows();
       //** calling the info window*/
-      self.infoWindowArray()[iniLocations.indexOf(itemNo)].infowindow.open(self.map, this.marker);
+      self.closeAllWindows();
+      self.infoWindowArray()[iniLocations.indexOf(itemNo)].infowindow.open(map, this.marker);
       //** starting the marker bounce */
       self.markerArray()[iniLocations.indexOf(itemNo)].marker.setAnimation(google.maps.Animation.BOUNCE);
       //** calling the bouncing off after 2,85 seconds (last animation cycle is roughly finished then) */
@@ -124,21 +129,26 @@ var ViewModel = function() {
     });
   };
 
+/**this function iterates through all infowindows in order to close them */
+  self.closeAllWindows = function() {
+    var len = iniLocations.length;
+    for (var i = 0; i < len; i++) {
+      self.infoWindowArray()[i].infowindow.close();
+    }
+  };
 
   /**for storing the api-retrieved wikipedia articles */
   self.ArticleArray = ko.observableArray();
 
   /** building array of infowindows, works nicely: vm.infoWindowArray()[0].infowindow.content*/
   self.constructInfoWindow = function(itemNo) {
-    this.infowindow = new google.maps.InfoWindow({
+      this.infowindow = new google.maps.InfoWindow({
       content: self.buildBox(itemNo),
       position: itemNo.coords,
       //** this is supposed to move the infobox just on top of the marker ###but it doesnt### */
       pixelOffset: (0,0)
     });
-
   };
-
 
   /** creating a textbox with the links requested from the wiki api*/
   self.buildBox = function(itemNo) {
@@ -148,7 +158,6 @@ var ViewModel = function() {
     return contentStr;
     //console.log(contentStr);
   };
-
 
 
 /**wikipedia api request */
@@ -252,9 +261,6 @@ var ViewModel = function() {
   };
 };
 
-
-
-/**knockout.js go-live*/
 
 
 /** only used for trouble shooting*/
