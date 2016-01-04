@@ -268,8 +268,8 @@ var ViewModel = function() {
       done: function(response) {
         var articleList = response[1];
         /**limiting returned articles to 1 for now */
-        for (var i = 0; i < 1; i++) {
-          articleStr = articleList[i];
+        for (var i = 0; i < 5; i++) {
+          var articleStr = articleList[i];
           var url = 'http://en.wikipedia.org/wiki/' + articleStr;
           /** further usage of the url string in the observablearray*/
           wikilog().push(url);
@@ -277,7 +277,7 @@ var ViewModel = function() {
         }
         function error(e) {
           var url = 'http://www.google.com'
-          return url
+          return url;
         }
         //clearTimeout(wikiRequestTimeout);
       }
@@ -290,3 +290,4 @@ var ViewModel = function() {
 //var foo = ViewModel.markerArray;
 //var vm = ko.dataFor(document.body);
 //vm.infoWindowArray()[0].infowindow.content
+
