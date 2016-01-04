@@ -2,7 +2,7 @@
 var infowindow;
 var map;
 /**created as a global variable so the externalized api request can call it better*/
-var wikilog = ko.observableArray('');
+var wikilog = ko.observableArray([]);
 
 /** database storing locations and some details */
 var iniLocations = [{
@@ -31,7 +31,7 @@ var iniLocations = [{
   }
 }, {
   clickCount: 0,
-  name: "Schängelbrunnen",
+  name: "Stolzenfels",
   descr: "a Fountain!",
   coords: {
     lat: 50.360200,
@@ -64,14 +64,14 @@ var iniLocations = [{
 }, {
   clickCount: 0,
   name: "Church",
-  descr: "a building",
+  descr: "an old building",
   coords: {
     lat: 50.362062,
     lng: 7.603766
   }
 }, {
   clickCount: 0,
-  name: "Kapuzinerplatz",
+  name: "Stadtmitte",
   descr: "an old square",
   coords: {
     lat: 50.358631,
@@ -83,7 +83,7 @@ var iniLocations = [{
 function init() {
 /**knockout.js go-live*/
   ko.applyBindings(new ViewModel());
-}
+};
 
 /**ViewModel aka Octopus*/
 
@@ -120,9 +120,6 @@ var ViewModel = function() {
       self.closeAllWindows();
       //** calling the info window*/
       self.closeAllWindows();
-      /** center the map around the marker */
-      map.setCenter(itemNo.coords);
-      /** opening the marker */
       self.infoWindowArray()[iniLocations.indexOf(itemNo)].infowindow.open(map, this.marker);
       //** starting the marker bounce */
       self.markerArray()[iniLocations.indexOf(itemNo)].marker.setAnimation(google.maps.Animation.BOUNCE);
@@ -137,7 +134,7 @@ var ViewModel = function() {
   self.closeAllWindows = function() {
     var len = iniLocations.length;
     for (var i = 0; i < len; i++) {
-      self.infoWindowArray()[i].infowindow.close();
+     self.infoWindowArray()[i].infowindow.close();
     }
   };
 
@@ -148,9 +145,7 @@ var ViewModel = function() {
   self.constructInfoWindow = function(itemNo) {
       this.infowindow = new google.maps.InfoWindow({
       content: self.buildBox(itemNo),
-      position: {lat: itemNo.coords.lat+0.001, lng: itemNo.coords.lng},
-      //** this is supposed to move the infobox just on top of the marker ###but it doesnt### */
-      pixelOffset: (0,0)
+      position: {lat: itemNo.coords.lat+0.001, lng: itemNo.coords.lng}
     });
   };
 
@@ -158,8 +153,7 @@ var ViewModel = function() {
   self.buildBox = function(itemNo) {
     wikiArticles(itemNo);
     var samplepic = ('<img class="streetpic" src="http://maps.googleapis.com/maps/api/streetview?size=240x120&location=' + itemNo.coords.lat + ',' + itemNo.coords.lng + '"">');
-    var contentStr = ko.observable('');
-    contentStr = '<h3 class="headline3">Discover ' + itemNo.descr + '</h3><br>' + '<p>Read more:<a href=' + wikilog()[iniLocations.indexOf(itemNo)] + '>Wikipedia</a><br>' + samplepic;
+    var contentStr = '<h3 class="headline3">Discover ' + itemNo.descr + '</h3><br>' + '<p>Read more:<a href="' + wikilog()[iniLocations.indexOf(itemNo)] + '">Wikipedia</a><br>' + samplepic;
     return contentStr;
     //console.log(contentStr);
   };
@@ -203,7 +197,7 @@ var ViewModel = function() {
     self.markerArray()[val].marker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function() {
     self.markerArray()[val].marker.setAnimation(false);
-      }, 2850);
+    }, 2850);
   };
 
   /** showing all markers and killing animations*/
@@ -243,10 +237,11 @@ var ViewModel = function() {
 
   /** linked with the click function in html to only show the selected marker*/
   self.showPos = function(val) {
-   // self.hideMarkers();
+    //self.hideMarkers();
     self.showMarkers(iniLocations.indexOf(val));
     self.closeAllWindows();
     self.infoWindowArray()[iniLocations.indexOf(val)].infowindow.open(map, this.marker);
+    /** centering the map when clicking on a list item*/
     map.setCenter(val.coords);
   };
 };
@@ -255,29 +250,27 @@ var ViewModel = function() {
 /**wikipedia api request */
   function wikiArticles(itemNo) {
     var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + itemNo.name + '&format=json&callback=wikiCallback';
-   // var wikiRequestTimeout = setTimeout(function(){
-   //  wikiError = ko.observable('');
-   //  wikiError = ("failed to load wikipedia articles");
-   //  },4000);
 
     /**actual part of the api request */
-    $.ajax({
+  $.ajax({
       url: wikiUrl,
       dataType: "jsonp",
       jsonp: "callback",
-      done: function(response) {
+      success: function(response) {
         var articleList = response[1];
         /**limiting returned articles to 1 for now */
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 1; i++) {
           var articleStr = articleList[i];
+          /** as not all returned text strings have white strings, error messages are surpressed this way*/
+          try { articleStr = articleStr.split(' ').join('_') } catch(err){};
           var url = 'http://en.wikipedia.org/wiki/' + articleStr;
           /** further usage of the url string in the observablearray*/
-          wikilog().push(url);
+          wikilog.push(url);
           return url;
         }
         function error(e) {
           var url = 'http://www.google.com'
-          return url;
+          return url
         }
         //clearTimeout(wikiRequestTimeout);
       }
@@ -289,5 +282,6 @@ var ViewModel = function() {
 /** only used for trouble shooting*/
 //var foo = ViewModel.markerArray;
 //var vm = ko.dataFor(document.body);
+
 //vm.infoWindowArray()[0].infowindow.content
 

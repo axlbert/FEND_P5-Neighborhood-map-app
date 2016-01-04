@@ -31,12 +31,12 @@
 							<form class="navbar-form navbar-left" role="search">
 								<div class="form-group">
 									<input type="text" class="form-control" placeholder="Search" data-bind="textInput: input, event: {keyup: filterFunc}"><span class="inverted-headline">Discover a random city :</span><span class="inverted-headline2">Koblenz, Germany</span>
-									<!--<button id="btn100" type="button" class="btn btn-default navbar-btn" data-bind="click: showAllMarkers">Show all</button>-->
 								</div>
 							</form>
 					</div>
 				</div>
 				<div class="row">
+						<!--<button id="btn100" type="button" class="btn btn-default navbar-btn" data-bind="click: showAllMarkers">Show all</button>-->
 						<ul class="div-group" data-bind="template: {name:'list', foreach: filterList  }"></ul>
 						<!--adding a $parent keeps the code from breaking-->
 						<script type="text/html" id="list">

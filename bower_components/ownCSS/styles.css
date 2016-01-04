@@ -9,7 +9,7 @@ body {
 	font-size: 20px;
 }
 
-@media screen and (max-width: 440px) {
+@media screen and (max-width: 450px) {
   .div-group {
     display: none;
   }
