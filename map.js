@@ -1,8 +1,6 @@
 /** global variables*/
-var infowindow;
 var map;
-/**created as a global variable so the externalized api request can call it better*/
-var wikilog = ko.observableArray([]);
+
 
 /** database storing locations and some details */
 var iniLocations = [{
@@ -128,8 +126,11 @@ function init() {
         /**closing all old infowindows*/
         self.closeAllWindows();
         //** calling the info window*/
-        self.closeAllWindows();
         self.infoWindowArray()[iniLocations.indexOf(itemNo)].infowindow.open(map, this.marker);
+        map.setCenter({
+          lat: itemNo.coords.lat + 0.004,
+          lng: itemNo.coords.lng
+        });
         //** starting the marker bounce */
         self.markerArray()[iniLocations.indexOf(itemNo)].marker.setAnimation(google.maps.Animation.BOUNCE);
         //** calling the bouncing off after 2,85 seconds (last animation cycle is roughly finished then) */
@@ -153,7 +154,7 @@ function init() {
     /** building array of infowindows, works nicely: vm.infoWindowArray()[0].infowindow.content*/
     self.constructInfoWindow = function(itemNo) {
       this.infowindow = new google.maps.InfoWindow({
-        content: self.buildBox(itemNo),
+        content: null,
         position: {
           lat: itemNo.coords.lat + 0.001,
           lng: itemNo.coords.lng
@@ -161,23 +162,13 @@ function init() {
       });
     };
 
-    /** creating a textbox with the links requested from the wiki api*/
-    self.buildBox = function(itemNo) {
-      //wikiArticles(itemNo);
-      /**doesnt get filled with a value, although this works in the console */
-      var linkStr = wikilog[iniLocations.indexOf(itemNo)];
-      var samplepic = ('<img class="streetpic" src="http://maps.googleapis.com/maps/api/streetview?size=240x120&location=' + itemNo.coords.lat + ',' + itemNo.coords.lng + '"">');
-      var contentStr = '<h3 class="headline3">Discover ' + itemNo.descr + '</h3><br>' + '<p>Read more:<a href="' + linkStr + '">Wikipedia</a><br>' + samplepic;
-      return contentStr;
-      //console.log(contentStr);
-    };
-
     /**building an array of markers to be observed*/
+
     iniLocations.forEach(function(itemNo) {
       self.markerArray.push(new self.constructMarkers(itemNo));
       self.infoWindowArray.push(new self.constructInfoWindow(itemNo));
+      wikiArticles(itemNo);
     });
-
 
     // self.addmarkerListeners();
     /**should be used to push the current search result in and then render the menu from it*/
@@ -229,7 +220,7 @@ function init() {
       self.hideMarkers();
 
       var filterInput = self.input().toLowerCase();
-      if (filterInput.length > 1) {
+      if (filterInput.length > 0) {
         //console.log("filter function is hit");
         iniLocations.forEach(function(val) {
           //self.markerArray.push(new self.constructMarkers(val));
@@ -259,20 +250,22 @@ function init() {
       self.closeAllWindows();
       self.infoWindowArray()[iniLocations.indexOf(val)].infowindow.open(map, this.marker);
       /** centering the map when clicking on a list item*/
-      map.setCenter(val.coords);
+      map.setCenter({
+          lat: val.coords.lat + 0.004,
+          lng: val.coords.lng
+        });
     };
-  };
-
 
   /**wikipedia api request */
   function wikiArticles(itemNo) {
-    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + itemNo.name + '&format=json&callback=wikiCallback';
+    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + itemNo.name + '&format=json&callback=';
 
     /**actual part of the api request */
     $.ajax({
       url: wikiUrl,
       dataType: "jsonp",
       jsonp: "callback",
+      /** using done instead of success made the request fail*/
       success: function(response) {
         var articleList = response[1];
         /**limiting returned articles to 1 for now */
@@ -284,23 +277,27 @@ function init() {
           } catch (err) {}
           var url = 'http://en.wikipedia.org/wiki/' + articleStr;
           /** further usage of the url string in the observablearray*/
-          wikilog.push(url);
-          return url;
+
+          var samplepic = ('<img class="streetpic" src="http://maps.googleapis.com/maps/api/streetview?size=240x120&location=' + itemNo.coords.lat + ',' + itemNo.coords.lng + '"">');
+          var contentStr = '<div class="iw_cont"><h3 class="headline3">Discover ' + itemNo.descr + '</h3><br>' + '<p>Read more:<a href="' + url + '">Wikipedia</a><br>' + samplepic +'</div>';
+          self.infoWindowArray()[iniLocations.indexOf(itemNo)].infowindow.setContent(contentStr);
         }
 
-        function error(e) {
-          var url = 'http://www.google.com';
-          return url;
-        }
+        },
+          error: function (error) {
+            alert("sorry api request failed");
+          }
+
         //clearTimeout(wikiRequestTimeout);
-      }
+      });
 
-    });
-  }
 
+    }
+};
 
 /** only used for trouble shooting*/
 //var foo = ViewModel.markerArray;
 //var vm = ko.dataFor(document.body);
 
 //vm.infoWindowArray()[0].infowindow.content
+
